@@ -1,0 +1,610 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AgriSense - AI Farming Assistant</title>
+    <!-- Load Tailwind CSS --><script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* Set default font */
+        body {
+            font-family: 'Inter', sans-serif;
+            scroll-behavior: smooth;
+        }
+        /* Page transition styles */
+        .page {
+            display: none; /* Hidden by default */
+        }
+        .page.active {
+            display: block; /* Shown when active */
+        }
+        /* Simple CSS spinner */
+        .spinner {
+            border: 4px solid rgba(0, 0, 0, 0.1);
+            border-left-color: #22c55e; /* green-500 */
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        /* Style for file input */
+        input[type="file"]::file-selector-button {
+            background-color: #22c55e;
+            color: white;
+            border: none;
+            padding: 8px 12px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        input[type="file"]::file-selector-button:hover {
+            background-color: #16a34a;
+        }
+        /* Simple result content styling */
+        .result-content {
+            white-space: pre-wrap;
+            font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+            line-height: 1.6;
+        }
+    </style>
+</head>
+<body class="bg-gray-100">
+
+    <!-- Header & Navigation --><header class="bg-white shadow-md sticky top-0 z-40">
+        <nav class="container mx-auto px-4 sm:px-6 lg:px-8 py-4 flex justify-between items-center">
+            <a href="#" class="text-3xl font-bold text-green-600">
+                AgriSense
+            </a>
+            <div class="hidden md:flex space-x-6 items-center">
+                <a href="#" class="nav-btn text-green-600 font-semibold" data-page="page-home">Home</a>
+                <a href="#" class="nav-btn text-gray-600 hover:text-green-600" data-page="page-soil">Soil Recommendation</a>
+                <a href="#" class="nav-btn text-gray-600 hover:text-green-600" data-page="page-doctor">Plant Doctor</a>
+                <a href="#" class="nav-btn text-gray-600 hover:text-green-600" data-page="page-weather">Weather</a>
+                <a href="#" class="nav-btn text-gray-600 hover:text-green-600" data-page="page-market">Market Prices</a>
+                <button onclick="showPage('page-soil')" class="bg-green-600 text-white px-4 py-2 rounded-lg font-semibold hover:bg-green-700 transition-colors">
+                    Get Started
+                </button>
+            </div>
+            <!-- Mobile Menu Button --><div class="md:hidden">
+                <button id="mobile-menu-btn" class="text-gray-700 focus:outline-none">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path>
+                    </svg>
+                </button>
+            </div>
+        </nav>
+        <!-- Mobile Menu --><div id="mobile-menu" class="hidden md:hidden bg-white shadow-lg">
+            <a href="#" class="nav-btn block px-4 py-2 text-gray-600 hover:bg-gray-50" data-page="page-home">Home</a>
+            <a href="#" class="nav-btn block px-4 py-2 text-gray-600 hover:bg-gray-50" data-page="page-soil">Soil Recommendation</a>
+            <a href="#" class="nav-btn block px-4 py-2 text-gray-600 hover:bg-gray-50" data-page="page-doctor">Plant Doctor</a>
+            <a href="#" class="nav-btn block px-4 py-2 text-gray-600 hover:bg-gray-50" data-page="page-weather">Weather</a>
+            <a href="#" class="nav-btn block px-4 py-2 text-gray-600 hover:bg-gray-50" data-page="page-market">Market Prices</a>
+        </div>
+    </header>
+
+    <!-- Main Content Area --><main class="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
+
+        <!-- Page 1: Home --><div id="page-home" class="page active">
+            
+            <!-- Hero Section (as per image) --><section class="relative bg-gray-50 rounded-lg shadow-lg overflow-hidden p-8 md:p-12">
+                <div class="flex flex-col md:flex-row gap-8 items-center">
+                    
+                    <!-- Left Text Content --><div class="md:w-1/2">
+                        <h2 class="text-4xl font-bold text-green-800 leading-tight">AI-Powered Insights for Modern Farming</h2>
+                        <p class="mt-4 text-lg text-gray-600">Get data-driven recommendations for soil health, crop diseases, weather patterns, and market prices to maximize your yield and profitability.</p>
+                        <button onclick="showPage('page-soil')" class="mt-6 bg-green-600 text-white font-bold py-3 px-6 rounded-lg hover:bg-green-700 transition-colors shadow-lg">
+                            Get Started
+                        </button>
+                    </div>
+
+                    <!-- Right Card & Image --><div class="md:w-1/2 w-full">
+                        <div class="relative">
+                            <!-- Background Image -->
+                            <img src="https://i.ibb.co/yFXYSrCn/image.png" alt="Farmer in a field" class="rounded-lg shadow-md object-cover w-full h-64 md:h-80">
+                            
+                            <!-- Overlayed Card removed -->
+                            
+                            <!-- Smart Farming Label -->
+                            <div class="absolute top-4 right-4 bg-black bg-opacity-50 text-white px-3 py-1 rounded-md">
+                                <h4 class="font-semibold">Smart Farming</h4>
+                                <p class="text-sm">- Farmers using technology</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Features Section (8 cards) --><section class="mt-20">
+                <h3 class="text-3xl font-bold text-center text-gray-800 mb-8">Your Complete Farming Toolkit</h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                    
+                    <!-- Soil Test Card --><div class="bg-white p-6 rounded-lg shadow-lg hover:shadow-xl transition-shadow cursor-pointer flex flex-col items-center text-center" onclick="showPage('page-soil')">
+                        <svg class="w-16 h-16 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.363-.44m-2.363.44a2 2 0 01-1.022.547m3.385 0a2 2 0 01-3.385 0m3.385 0a2 2 0 01-1.693 1.023m-1.693-1.023a2 2 0 00-1.693 1.023m0 0a2 2 0 00-1.022-.547m0 0a2 2 0 01-1.022.547m0 0a2 2 0 01-3.385 0m0 0a2 2 0 00-1.693-1.023m1.693 1.023a2 2 0 01-1.693-1.023m0 0a2 2 0 01-1.022-.547m3.385 0a2 2 0 00-3.385 0m0 0a2 2 0 00-1.022.547m0 0a2 2 0 00-1.693 1.023m1.693-1.023a2 2 0 00-1.693-1.023m7.743 0m0 0a2 2 0 00-1.022-.547M12 21a9 9 0 110-18 9 9 0 010 18z"></path></svg>
+                        <h4 class="text-xl font-semibold mt-4">Soil Test</h4>
+                        <p class="text-gray-600 mt-2">Input N, P, K, and pH values to get expert AI advice on the best crops for your land.</p>
+                    </div>
+                    
+                    <!-- AI Plant Doctor Card 1 --><div class="bg-white p-6 rounded-lg shadow-lg hover:shadow-xl transition-shadow cursor-pointer flex flex-col items-center text-center" onclick="showPage('page-doctor')">
+                        <svg class="w-16 h-16 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+                        <h4 class="text-xl font-semibold mt-4">AI Plant Doctor</h4>
+                        <p class="text-gray-600 mt-2">Upload a photo for crop disease diagnosis and get AI-driven treatment plans.</p>
+                    </div>
+
+                    <!-- Plant Doctor Card 2 (from image) --><div class="bg-white p-6 rounded-lg shadow-lg hover:shadow-xl transition-shadow cursor-pointer flex flex-col items-center text-center" onclick="showPage('page-doctor')">
+                         <svg class="w-16 h-16 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                        <h4 class="text-xl font-semibold mt-4">Plant Doctor</h4>
+                        <p class="text-gray-600 mt-2">Get instant, reliable diagnosis by uploading a simple photo of the affected plant.</p>
+                    </div>
+
+                    <!-- Weather Card --><div class="bg-white p-6 rounded-lg shadow-lg hover:shadow-xl transition-shadow cursor-pointer flex flex-col items-center text-center" onclick="showPage('page-weather')">
+                        <svg class="w-16 h-16 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
+                        <h4 class="text-xl font-semibold mt-4">Weather</h4>
+                        <p class="text-gray-600 mt-2">Hyperlocal forecasts to plan irrigation, planting, and harvesting schedules.</p>
+                    </div>
+                    
+                    <!-- Sant Doctor (Placeholder) --><div class="bg-white p-6 rounded-lg shadow-lg hover:shadow-xl transition-shadow cursor-pointer flex flex-col items-center text-center" onclick="showPage('page-doctor')">
+                        <svg class="w-16 h-16 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v3a3 3 0 01-3 3z"></path></svg>
+                        <h4 class="text-xl font-semibold mt-4">Expert Support</h4>
+                        <p class="text-gray-600 mt-2">Connect with experts and get advice for complex farming challenges.</p>
+                    </div>
+
+                    <!-- AI Plant Doctor Card 3 --><div class="bg-white p-6 rounded-lg shadow-lg hover:shadow-xl transition-shadow cursor-pointer flex flex-col items-center text-center" onclick="showPage('page-doctor')">
+                        <svg class="w-16 h-16 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.363-.44m-2.363.44a2 2 0 01-1.022.547m3.385 0a2 2 0 01-3.385 0m3.385 0a2 2 0 01-1.693 1.023m-1.693-1.023a2 2 0 00-1.693 1.023m0 0a2 2 0 00-1.022-.547m0 0a2 2 0 01-1.022.547m0 0a2 2 0 01-3.385 0m0 0a2 2 0 00-1.693-1.023m1.693 1.023a2 2 0 01-1.693-1.023m0 0a2 2 0 01-1.022-.547m3.385 0a2 2 0 00-3.385 0m0 0a2 2 0 00-1.022.547m0 0a2 2 0 00-1.693 1.023m1.693-1.023a2 2 0 00-1.693-1.023m7.743 0m0 0a2 2 0 00-1.022-.547M12 21a9 9 0 110-18 9 9 0 010 18z"></path></svg>
+                        <h4 class="text-xl font-semibold mt-4">AI Plant Doctor</h4>
+                        <p class="text-gray-600 mt-2">Upload a photo of a crop leaf for instant disease diagnosis and treatment plans.</p>
+                    </div>
+
+                    <!-- Weather Predes (Placeholder) --><div class="bg-white p-6 rounded-lg shadow-lg hover:shadow-xl transition-shadow cursor-pointer flex flex-col items-center text-center" onclick="showPage('page-weather')">
+                        <svg class="w-16 h-16 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
+                        <h4 class="text-xl font-semibold mt-4">Weather Predictions</h4>
+                        <p class="text-gray-600 mt-2">Advanced weather modeling to protect your crops from extreme events.</p>
+                    </div>
+                    
+                    <!-- Market Prices Card --><div class="bg-white p-6 rounded-lg shadow-lg hover:shadow-xl transition-shadow cursor-pointer flex flex-col items-center text-center" onclick="showPage('page-market')">
+                        <svg class="w-16 h-16 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"></path></svg>
+                        <h4 class="text-xl font-semibold mt-4">Market Prices</h4>
+                        <p class="text-gray-600 mt-2">Compare real-time Mandi prices from nearby markets to sell for the best profit.</p>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <!-- Page 2: Soil Recommendation --><div id="page-soil" class="page hidden">
+            <h2 class="text-3xl font-bold text-green-800 mb-6">Soil Recommendation Engine</h2>
+            <div class="grid grid-cols-1 md:grid-cols-12 gap-8">
+                <!-- Form Column --><div class="md:col-span-5 bg-white p-6 rounded-lg shadow-lg">
+                    <h3 class="text-xl font-semibold text-gray-800 mb-4">Enter Your Soil Test Results</h3>
+                    <div class="space-y-4">
+                        <div>
+                            <label for="soil-n" class="block text-sm font-medium text-gray-700">Nitrogen (N) (kg/ha)</label>
+                            <input type="number" id="soil-n" placeholder="e.g., 90" class="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-green-500 focus:border-green-500">
+                        </div>
+                        <div>
+                            <label for="soil-p" class="block text-sm font-medium text-gray-700">Phosphorus (P) (kg/ha)</label>
+                            <input type="number" id="soil-p" placeholder="e.g., 42" class="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-green-500 focus:border-green-500">
+                        </div>
+                        <div>
+                            <label for="soil-k" class="block text-sm font-medium text-gray-700">Potassium (K) (kg/ha)</label>
+                            <input type="number" id="soil-k" placeholder="e.g., 43" class="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-green-500 focus:border-green-500">
+                        </div>
+                        <div>
+                            <label for="soil-ph" class="block text-sm font-medium text-gray-700">Soil pH</label>
+                            <input type="number" id="soil-ph" step="0.1" placeholder="e.g., 6.5" class="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-green-500 focus:border-green-500">
+                        </div>
+                        <button id="soil-submit-btn" onclick="getSoilRecommendation()" class="w-full bg-green-600 text-white p-3 rounded-lg font-semibold shadow-md hover:bg-green-700 transition-all flex items-center justify-center">
+                            Get AI Recommendation
+                        </button>
+                    </div>
+                </div>
+                <!-- Result Column --><div class="md:col-span-7 bg-white p-6 rounded-lg shadow-lg">
+                    <h3 class="text-xl font-semibold text-gray-800 mb-4">AI Recommendation</h3>
+                    <div id="soil-loading" class="hidden flex-col items-center justify-center py-12">
+                        <div class="spinner"></div>
+                        <p class="text-gray-600 mt-3">Analyzing soil... please wait.</p>
+                    </div>
+                    <div id="soil-result" class="hidden">
+                        <div id="soil-result-content" class="result-content bg-gray-50 p-4 rounded-lg mt-2 border border-gray-200"></div>
+                    </div>
+                    <div id="soil-placeholder" class="text-center text-gray-500 py-12">
+                        <span class="text-4xl">🌱</span>
+                        <p class="mt-2">Your crop recommendations will appear here.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Page 3: Plant Doctor --><div id="page-doctor" class="page hidden">
+            <h2 class="text-3xl font-bold text-green-800 mb-6">AI Plant e-Doctor</h2>
+            <div class="grid grid-cols-1 md:grid-cols-12 gap-8">
+                <!-- Form Column --><div class="md:col-span-5 bg-white p-6 rounded-lg shadow-lg">
+                    <h3 class="text-xl font-semibold text-gray-800 mb-4">Upload Crop Image</h3>
+                    <div class="space-y-4">
+                        <p class="text-gray-600">Upload a photo of the affected crop leaf for instant diagnosis and treatment.</p>
+                        <input type="file" id="plant-image-upload" accept="image/*" class="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-green-50 file:text-green-700 hover:file:bg-green-100">
+                        <img id="image-preview" src="" alt="Image Preview" class="hidden w-full rounded-lg shadow-md mt-4 border">
+                        <button id="doctor-submit-btn" onclick="getPlantDiagnosis()" class="w-full bg-green-600 text-white p-3 rounded-lg font-semibold shadow-md hover:bg-green-700 transition-all flex items-center justify-center">
+                            Diagnose Crop
+                        </button>
+                    </div>
+                </div>
+                <!-- Result Column --><div class="md:col-span-7 bg-white p-6 rounded-lg shadow-lg">
+                    <h3 class="text-xl font-semibold text-gray-800 mb-4">AI Diagnosis</h3>
+                    <div id="doctor-loading" class="hidden flex-col items-center justify-center py-12">
+                        <div class="spinner"></div>
+                        <p class="text-gray-600 mt-3">AI is diagnosing the plant... please wait.</p>
+                    </div>
+                    <div id="doctor-result" class="hidden">
+                        <div id="doctor-result-content" class="result-content bg-gray-50 p-4 rounded-lg mt-2 border border-gray-200"></div>
+                    </div>
+                    <div id="doctor-placeholder" class="text-center text-gray-500 py-12">
+                        <span class="text-4xl">🌿</span>
+                        <p class="mt-2">Your plant diagnosis and treatment plan will appear here.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Page 4: Weather (Placeholder) --><div id="page-weather" class="page hidden">
+            <h2 class="text-3xl font-bold text-green-800 mb-6">Hyperlocal Weather Predictor</h2>
+            <div class="bg-white p-6 rounded-lg shadow-lg">
+                <p class="text-gray-600 mb-4">This feature will show hyperlocal weather forecasts to help you plan irrigation and harvesting.</p>
+                <div class="bg-cyan-50 p-6 rounded-lg shadow border border-cyan-200">
+                    <p class="text-lg font-semibold text-cyan-800">Demo (Hackathon):</p>
+                    <p class="text-cyan-700">"This section will integrate a live weather API (like OpenWeatherMap) to provide 7-day and hourly forecasts based on the user's GPS location. It will include alerts for rain, hail, or extreme heat."</p>
+                </div>
+                <div class="mt-6 p-4 bg-gray-100 rounded-lg">
+                    <h4 class="text-lg font-semibold text-gray-800 mb-4">7-Day Forecast (Mockup)</h4>
+                    <div class="space-y-3">
+                        <div class="flex justify-between items-center p-3 bg-white rounded-lg shadow-sm">
+                            <span class="font-semibold text-gray-700">Today</span>
+                            <span class="text-2xl">☀️</span>
+                            <span class="font-semibold text-gray-800">32°C / 24°C</span>
+                        </div>
+                        <div class="flex justify-between items-center p-3 bg-white rounded-lg shadow-sm opacity-80">
+                            <span class="text-gray-600">Tomorrow</span>
+                            <span class="text-xl">🌤️</span>
+                            <span class="text-gray-700">31°C / 23°C</span>
+                        </div>
+                        <div class="flex justify-between items-center p-3 bg-white rounded-lg shadow-sm opacity-80">
+                            <span class="text-gray-600">Tuesday</span>
+                            <span class="text-xl">🌦️</span>
+                            <span class="text-gray-700">30°C / 22°C</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Page 5: Market (Placeholder) --><div id="page-market" class="page hidden">
+            <h2 class="text-3xl font-bold text-green-800 mb-6">Crop Market Prices</h2>
+            <div class="bg-white p-6 rounded-lg shadow-lg">
+                <p class="text-gray-600 mb-4">This feature will compare real-time market (Mandi) prices for your crops from different nearby markets.</p>
+                <div class="bg-purple-50 p-6 rounded-lg shadow border border-purple-200">
+                    <p class="text-lg font-semibold text-purple-800">Demo (Hackathon):</p>
+                    <p class="text-purple-700">"This section will pull data from government Mandi APIs (like data.gov.in) to show a comparison list of prices, helping farmers decide where to sell their produce for the best profit."</p>
+                </div>
+                <div class="mt-6 p-4 bg-gray-100 rounded-lg">
+                    <h4 class="text-lg font-semibold text-gray-800 mb-4">Live Mandi Prices (Mockup)</h4>
+                    <div class="space-y-3">
+                        <div class="flex justify-between items-center p-3 bg-white rounded-lg shadow-sm">
+                            <span class="font-semibold text-gray-700">Wheat (Lucknow Mandi)</span>
+                            <span class="text-green-600 font-bold">₹2,250 / quintal</span>
+                        </div>
+                        <div class="flex justify-between items-center p-3 bg-white rounded-lg shadow-sm">
+                            <span class="font-semibold text-gray-700">Tomato (Kanpur Mandi)</span>
+                            <span class="text-green-600 font-bold">₹1,800 / quintal</span>
+                        </div>
+                        <div class="flex justify-between items-center p-3 bg-white rounded-lg shadow-sm">
+                            <span class="font-semibold text-gray-700">Potato (Akbarpur Mandi)</span>
+                            <span class="text-green-600 font-bold">₹1,500 / quintal</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Footer --><footer class="bg-gray-800 text-gray-300 mt-12">
+        <div class="container mx-auto px-6 py-8 text-center">
+            <p>&copy; 2025 AgriSense. A Project by Anshuman, Vibhu and Vidhanshi.</p>
+            <p class="mt-2 text-sm">Powered by Google API.</p>
+        </div>
+    </footer>
+
+    <!-- Error Modal --><div id="error-modal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+        <div class="bg-white p-6 rounded-lg shadow-xl max-w-sm w-full">
+            <h3 class="text-xl font-semibold text-red-600">Error</h3>
+            <p id="error-message" class="text-gray-700 mt-2"></p>
+            <button onclick="hideModal()" class="mt-4 w-full bg-red-600 text-white p-2 rounded-lg font-semibold">
+                Close
+            </button>
+        </div>
+    </div>
+
+    <!-- Loading Modal --><div id="loading-modal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+        <div class="bg-white p-6 rounded-lg shadow-xl flex items-center">
+            <div class="spinner"></div>
+            <p id="loading-message" class="text-gray-700 ml-4">Loading...</p>
+        </div>
+    </div>
+
+
+    <script>
+        // --- Page Navigation (SPA) ---
+        const pages = document.querySelectorAll('.page');
+        const navButtons = document.querySelectorAll('.nav-btn');
+        const mobileMenu = document.getElementById('mobile-menu');
+        const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+
+        // Toggle mobile menu
+        mobileMenuBtn.addEventListener('click', () => {
+            mobileMenu.classList.toggle('hidden');
+        });
+
+        // Add click listener to all nav buttons
+        navButtons.forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                e.preventDefault();
+                const pageId = btn.getAttribute('data-page');
+                showPage(pageId);
+                // Close mobile menu on selection
+                if (!mobileMenu.classList.contains('hidden')) {
+                    mobileMenu.classList.add('hidden');
+                }
+            });
+        });
+
+        function showPage(pageId) {
+            // Hide all pages
+            pages.forEach(page => {
+                page.classList.remove('active');
+            });
+            // Show target page
+            const newPage = document.getElementById(pageId);
+            if (newPage) {
+                newPage.classList.add('active');
+            } else {
+                document.getElementById('page-home').classList.add('active'); // Fallback
+            }
+
+            // Update nav button active state
+            navButtons.forEach(btn => {
+                if (btn.getAttribute('data-page') === pageId) {
+                    btn.classList.add('text-green-600', 'font-semibold');
+                    btn.classList.remove('text-gray-600');
+                } else {
+                    btn.classList.remove('text-green-600', 'font-semibold');
+                    btn.classList.add('text-gray-600');
+                }
+            });
+            // Scroll to top
+            window.scrollTo(0, 0);
+        }
+
+        // --- Modals ---
+        const errorModal = document.getElementById('error-modal');
+        const errorMessage = document.getElementById('error-message');
+        const loadingModal = document.getElementById('loading-modal');
+        const loadingMessage = document.getElementById('loading-message');
+        
+        function showModal(message) {
+            errorMessage.textContent = message;
+            errorModal.classList.remove('hidden');
+        }
+
+        function hideModal() {
+            errorModal.classList.add('hidden');
+        }
+
+        function showLoading(message) {
+            loadingMessage.textContent = message;
+            loadingModal.classList.remove('hidden');
+        }
+
+        function hideLoading() {
+            loadingModal.classList.add('hidden');
+        }
+
+        // --- Soil Test Logic ---
+        const soilResult = document.getElementById('soil-result');
+        const soilResultContent = document.getElementById('soil-result-content');
+        const soilLoading = document.getElementById('soil-loading');
+        const soilSubmitBtn = document.getElementById('soil-submit-btn');
+        const soilPlaceholder = document.getElementById('soil-placeholder');
+
+        async function getSoilRecommendation() {
+            const n = document.getElementById('soil-n').value;
+            const p = document.getElementById('soil-p').value;
+            const k = document.getElementById('soil-k').value;
+            const ph = document.getElementById('soil-ph').value;
+
+            if (!n || !p || !k || !ph) {
+                showModal("Please fill in all soil test fields.");
+                return;
+            }
+
+            soilLoading.classList.remove('hidden');
+            soilPlaceholder.classList.add('hidden');
+            soilSubmitBtn.disabled = true;
+            soilResult.classList.add('hidden');
+
+            const systemPrompt = "You are an expert agronomist. A farmer has provided their soil test results. Your job is to provide clear, actionable advice in a friendly tone. Format the response with markdown for clear headings and lists.";
+            const userQuery = `My soil test results are:\n- Nitrogen (N): ${n} kg/ha\n- Phosphorus (P): ${p} kg/ha\n- Potassium (K): ${k} kg/ha\n- pH: ${ph}\n\nBased on these results, please provide:\n1.  **Soil Health Analysis**: A brief analysis of my soil's health (e.g., "Your soil is rich in Nitrogen but low in Phosphorus...").\n2.  **Top 3 Crop Recommendations**: The 3 most suitable crops to grow.\n3.  **Growth Guide**: For each recommended crop, provide a short "How to Grow" guide including tips on fertilizer or soil amendments needed to match the crop's needs to my soil.`;
+
+            const payload = {
+                contents: [{ parts: [{ text: userQuery }] }],
+                systemInstruction: {
+                    parts: [{ text: systemPrompt }]
+                },
+            };
+
+            try {
+                const response = await callGeminiApi(payload);
+                soilResultContent.textContent = response.text; // Using textContent for pre-wrap
+                soilResult.classList.remove('hidden');
+            } catch (error) {
+                showModal(error.message);
+                soilPlaceholder.classList.remove('hidden');
+            } finally {
+                soilLoading.classList.add('hidden');
+                soilSubmitBtn.disabled = false;
+            }
+        }
+
+        // --- Plant Doctor Logic ---
+        const plantImageUpload = document.getElementById('plant-image-upload');
+        const imagePreview = document.getElementById('image-preview');
+        const doctorResult = document.getElementById('doctor-result');
+        const doctorResultContent = document.getElementById('doctor-result-content');
+        const doctorLoading = document.getElementById('doctor-loading');
+        const doctorSubmitBtn = document.getElementById('doctor-submit-btn');
+        const doctorPlaceholder = document.getElementById('doctor-placeholder');
+
+        // Show image preview on file selection
+        plantImageUpload.addEventListener('change', () => {
+            const file = plantImageUpload.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    imagePreview.src = e.target.result;
+                    imagePreview.classList.remove('hidden');
+                };
+                reader.readAsDataURL(file);
+                doctorResult.classList.add('hidden'); // Hide old results
+                doctorPlaceholder.classList.remove('hidden');
+            }
+        });
+
+        async function getPlantDiagnosis() {
+            const file = plantImageUpload.files[0];
+            if (!file) {
+                showModal("Please upload an image of the crop leaf.");
+                return;
+            }
+
+            doctorLoading.classList.remove('hidden');
+            doctorPlaceholder.classList.add('hidden');
+            doctorSubmitBtn.disabled = true;
+            doctorResult.classList.add('hidden');
+
+            try {
+                // 1. Convert image to base64
+                const base64ImageData = await imageToBase64(file);
+
+                // 2. Prepare API payload
+                const systemPrompt = "Act as an expert plant pathologist. A farmer has uploaded an image of a crop. Identify the plant and any disease you see. If a disease is present, provide a confidence level (e.g., 95% confident), the common name, and a step-by-step treatment plan. Include both organic and chemical (medicine) solutions. If the plant is healthy, say so and offer tips. Format the response with markdown.";
+                const userQuery = "Please analyze this crop image. What plant is it, what's wrong with it, and how do I fix it?";
+
+                const payload = {
+                    contents: [
+                        {
+                            role: "user",
+                            parts: [
+                                { text: userQuery },
+                                {
+                                    inlineData: {
+                                        mimeType: file.type,
+                                        data: base64ImageData
+                                    }
+                                }
+                            ]
+                        }
+                    ],
+                    systemInstruction: {
+                        parts: [{ text: systemPrompt }]
+                    },
+                };
+
+                // 3. Call API
+                const response = await callGeminiApi(payload);
+                doctorResultContent.textContent = response.text; // Using textContent for pre-wrap
+                doctorResult.classList.remove('hidden');
+
+            } catch (error) {
+                showModal(error.message);
+                doctorPlaceholder.classList.remove('hidden');
+            } finally {
+                doctorLoading.classList.add('hidden');
+                doctorSubmitBtn.disabled = false;
+            }
+        }
+
+        // --- Helper: Image to Base64 ---
+        function imageToBase64(file) {
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.readAsDataURL(file);
+                reader.onload = () => {
+                    // Get data URL and strip the prefix
+                    const base64Data = reader.result.split(',')[1];
+                    resolve(base64Data);
+                };
+                reader.onerror = (error) => reject(error);
+            });
+        }
+
+
+        // --- Gemini API Call Function ---
+        // IMPORTANT: The API key is an empty string.
+        // The runtime environment will automatically provide the necessary credentials.
+        const apiKey = "AIzaSyBFbNNVL4D7r3L6ss0BxK3pJWr5-omnDH8"; // DO NOT CHANGE THIS
+        const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`;
+
+        async function callGeminiApi(payload, retries = 3, delay = 1000) {
+            // Use the full-page loading modal for API calls
+            showLoading("Communicating with AI Assistant...");
+            try {
+                for (let i = 0; i < retries; i++) {
+                    const response = await fetch(apiUrl, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(payload)
+                    });
+
+                    if (!response.ok) {
+                        if (response.status === 429 || response.status >= 500) {
+                            // Throttling or server error, so retry
+                            if (i === retries - 1) throw new Error(`Server error: ${response.status}. Please try again later.`);
+                            await new Promise(res => setTimeout(res, delay * Math.pow(2, i)));
+                            continue; // Go to next retry
+                        } else {
+                            // Client-side error (e.g., bad request), don't retry
+                            const errorData = await response.json();
+                            throw new Error(`API Error: ${errorData.error.message || response.statusText}`);
+                        }
+                    }
+
+                    const result = await response.json();
+                    const candidate = result.candidates?.[0];
+
+                    if (candidate && candidate.content?.parts?.[0]?.text) {
+                        return { text: candidate.content.parts[0].text };
+                    } else {
+                        // Handle cases where the response structure is unexpected
+                        throw new Error("Invalid API response structure.");
+                    }
+                }
+            } catch (error) {
+                console.error("API call failed:", error);
+                throw new Error(`Failed to get a response from the AI. ${error.message}`);
+            } finally {
+                hideLoading(); // Always hide the modal
+            }
+        }
+
+        // Initialize the app by showing the home page
+        document.addEventListener('DOMContentLoaded', () => {
+            showPage('page-home');
+        });
+
+    </script>
+</body>
+</html>
